@@ -13,7 +13,7 @@ typedef struct feature {
     thing *dis_thing;
     int dis_total;
 
-    thing *all_thing;
+    thing *thing;
     int total;
 } feature;
 
@@ -29,6 +29,19 @@ struct branch {
     thing *thing;
     struct node *node;
 };
+
+feature *make_feature(char *name, int x, int dis_total, int total) {
+    feature *some_ftr = malloc(sizeof(feature));
+    
+    some_ftr->name = strdup(name);
+    some_ftr->x_pos = x;
+    some_ftr->dis_total = dis_total;
+    some_ftr->dis_thing = malloc(sizeof(thing)*dis_total);
+    some_ftr->total = total;
+    some_ftr->thing = malloc(sizeof(thing)*total);
+
+    return some_ftr;
+}
 
 int main() {
     
