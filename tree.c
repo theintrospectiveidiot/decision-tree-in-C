@@ -98,6 +98,19 @@ void push_things(feature *feature, ...) {
 
 }
 
+void print_ftr(feature * ftr) {
+    printf("all the [thing]s:\n");
+    for(int i=0;i<ftr->total;i++) {
+        printf("pos: %d\nindex: %d\n", ftr->thing[i]->position[1], ftr->thing[i]->index);
+        printf("name: %s\n", ftr->thing[i]->name);
+    }
+    printf("\nall the [dis_thing]s:\n");
+    for(int i=0;i<ftr->dis_total;i++) {
+        printf("index: %d\n", ftr->dis_thing[i]->index);
+        printf("name: %s\n", ftr->dis_thing[i]->name);
+    }
+}
+
 int main() {
     feature *ftr = make_feature("stuff", 0, 2, 3);
 
@@ -105,13 +118,6 @@ int main() {
                      make_thing("cool", (int[]){0, 1}, 0), 
                      make_thing("uncool", (int[]){0, 2}, 1));
 
-    for(int i=0;i<ftr->total;i++) {
-        printf("pos: %d\nindex: %d\n", ftr->thing[i]->position[1], ftr->thing[i]->index);
-        printf("name: %s\n", ftr->thing[i]->name);
-    }
-    for(int i=0;i<ftr->dis_total;i++) {
-        printf("index: %d\n", ftr->dis_thing[i]->index);
-        printf("name: %s\n", ftr->dis_thing[i]->name);
-    }
+    print_ftr(ftr);
 
 }
