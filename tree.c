@@ -70,5 +70,14 @@ void push_things(feature *feature, ...) {
 }
 
 int main() {
-    feature *ftr = make_feature("stuff", 0, 3, 6);
+    feature *ftr = make_feature("stuff", 0, 2, 3);
+
+    push_things(ftr, make_thing("cool", (int[]){0, 0}, 0), 
+                     make_thing("cool", (int[]){0, 1}, 0), 
+                     make_thing("uncool", (int[]){0, 2}, 1));
+
+    for(int i=0;i<ftr->total;i++) {
+        printf("pos: %d\nindex: %d\n", ftr->thing[i]->position[1], ftr->thing[i]->index);
+        printf("name: %s\n", ftr->thing[i]->name);
+    }
 }
