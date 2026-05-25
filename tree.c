@@ -57,6 +57,32 @@ thing *make_thing(char *name, int *position, int index) {
     return something;
 }
 
+int *init_to_num(int size, int num) {
+    int *numbrs = malloc(sizeof(int)*size);
+    for(int i=0;i<size;i++) {
+        numbrs[i] = num;
+    }
+    return numbrs;
+}
+
+int categorize(feature* ftr) {
+    int *arr = init_to_num(ftr->dis_total, 0);
+    int j = 0;
+    for(int i=0;i<ftr->total;i++) {
+        if(arr[ftr->thing[i]->index]) {
+            //printf("bonjour, skipped %s of index %d\n", ftr->thing[i]->name, ftr->thing[i]->index);
+            continue;
+        }
+        else {
+            arr[ftr->thing[i]->index] = 1;
+            ftr->dis_thing[j] = ftr->thing[i];
+            //printf("bonjour, added %s of index %d to the dis_thing\n", ftr->dis_thing[j]->name, ftr->dis_thing[j]->index);
+            j += 1;
+        }
+    }
+    return 0;
+}
+
 void push_things(feature *feature, ...) {
     va_list args;
 
@@ -67,6 +93,9 @@ void push_things(feature *feature, ...) {
     }
 
     va_end(args);
+
+    categorize(feature);
+
 }
 
 int main() {
@@ -80,4 +109,9 @@ int main() {
         printf("pos: %d\nindex: %d\n", ftr->thing[i]->position[1], ftr->thing[i]->index);
         printf("name: %s\n", ftr->thing[i]->name);
     }
+    for(int i=0;i<ftr->dis_total;i++) {
+        printf("index: %d\n", ftr->dis_thing[i]->index);
+        printf("name: %s\n", ftr->dis_thing[i]->name);
+    }
+
 }
