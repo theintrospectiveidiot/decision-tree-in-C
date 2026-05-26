@@ -80,6 +80,8 @@ int categorize(feature* ftr) {
             j += 1;
         }
     }
+
+    free(arr);
     return 0;
 }
 
@@ -114,10 +116,20 @@ void print_ftr(feature * ftr) {
     printf("================================================\n");
 }
 
+void print_node(node *n) {
+    printf("\n[%s]\n  ", n->feature->name);
+    for(int i=0;i<n->feature->dis_total;i++) {
+        if (n->branch[i]->node != NULL) printf("|\n  |\n  |___[%s]\n  ", n->branch[i]->node->feature->name);
+        else printf("|\n  |\n  |___[%s]\n  ","NULL");
+    }    
+}
+
 branch *make_branch(thing *stuff) {
     branch *branch = malloc(sizeof(branch));
     branch->thing = stuff;
     branch->node = malloc(sizeof(node));
+    
+    branch->node = NULL;
 
     return branch;
 }
@@ -127,44 +139,60 @@ node *make_node(feature *ftr) {
     current_node->feature = ftr;
     current_node->branch = malloc(sizeof(branch *)*ftr->dis_total);
     
-    printf("%s has %d branches:\n", ftr->name, ftr->dis_total);
+    //printf("%s has %d branches:\n", ftr->name, ftr->dis_total);
     for(int i=0;i<ftr->dis_total;i++) {
         current_node->branch[i] = make_branch(ftr->dis_thing[i]);
-        printf("%s\n", current_node->branch[i]->thing->name);
+        //printf("%s\n", current_node->branch[i]->thing->name);
     }
 
     return current_node;
 }
 
+void push_nodes(node *c_node, ...) {
+    va_list args;
+
+    va_start(args, c_node);
+    
+    for(int i=0;i<c_node->feature->dis_total;i++) {
+        c_node->branch[i]->node = va_arg(args, node *);
+    }
+
+    va_end(args);
+}
+
 int main() {
    feature *stuff = make_feature("coolness", 0, 2, 3);
 
-   push_things(stuff, make_thing("cool", (int[]){0, 0}, 0), 
-                      make_thing("cool", (int[]){0, 1}, 0), 
-                      make_thing("uncool", (int[]){0, 2}, 1),
-                      make_thing("cool", (int[]){0, 3}, 0),
-                      make_thing("uncool", (int[]){0, 4}, 1));
+   push_things(stuff, make_thing("cool",    (int[]){0, 0}, 0), 
+                      make_thing("cool",    (int[]){0, 1}, 0), 
+                      make_thing("uncool",  (int[]){0, 2}, 1),
+                      make_thing("cool",    (int[]){0, 3}, 0),
+                      make_thing("uncool",  (int[]){0, 4}, 1));
    //print_ftr(stuff);
 
    feature *ftr2 = make_feature("weirdness", 1, 3, 5);
 
-   push_things(ftr2, make_thing("totally weird", (int[]){1, 0}, 0),
-                     make_thing("somewhat weird", (int[]){1, 1}, 1),
-                     make_thing("somewhat weird", (int[]){1, 2}, 1),
+   push_things(ftr2, make_thing("totally weird",    (int[]){1, 0}, 0),
+                     make_thing("somewhat weird",   (int[]){1, 1}, 1),
+                     make_thing("somewhat weird",   (int[]){1, 2}, 1),
                      make_thing("not weird at all", (int[]){1, 3}, 2),
-                     make_thing("totally weird", (int[]){1, 4}, 0));
+                     make_thing("totally weird",    (int[]){1, 4}, 0));
    
    //print_ftr(ftr2);
 
    feature *ftr3 = make_feature("academics", 2, 2, 5);
 
-   push_things(ftr3, make_thing("good", (int[]){2, 0}, 0),
-                     make_thing("not so good", (int[]){2, 1}, 1), 
-                     make_thing("good", (int[]){2, 2}, 0),
-                     make_thing("good", (int[]){2, 3}, 0),
-                     make_thing("not so good", (int[]){2, 4}, 1));
+   push_things(ftr3, make_thing("good",         (int[]){2, 0}, 0),
+                     make_thing("not so good",  (int[]){2, 1}, 1), 
+                     make_thing("good",         (int[]){2, 2}, 0),
+                     make_thing("good",         (int[]){2, 3}, 0),
+                     make_thing("not so good",  (int[]){2, 4}, 1));
    //print_ftr(ftr3);
 
    node *root = make_node(stuff);
-
+   push_nodes(root, make_node(ftr2), make_node(ftr3));
+   print_node(root);
+   print_node(make_node(ftr2));
+   
+   
 }
