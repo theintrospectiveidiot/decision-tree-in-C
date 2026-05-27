@@ -50,7 +50,7 @@ feature *make_feature(char *name, int x, int dis_total, int total) {
 }
 
 feature *make_feature_man(char *name, int x, int dis_total, int total) {
-    feature *some_ftr = malloc(sizeof(feature));
+    feature *some_ftr = malloc(sizeof(feature) + sizeof(double));
     
     some_ftr->name = name;
     some_ftr->x_pos = x;
@@ -155,10 +155,23 @@ void print_ftr(feature * ftr) {
 void print_node(node *n) {
     printf("\n[%s]\n  ", n->feature->name);
     for(int i=0;i<n->feature->dis_total;i++) {
-        if (n->branch[i]->node != NULL) printf("|\n  |\n  |___[%s]\n  ", n->branch[i]->node->feature->name);
-        else printf("|\n  |\n  |___[%s]\n  ","NULL");
+        if (n->branch[i]->node != NULL) {
+            printf("|\n  |\n  |___(%s)___[%s]\n  ", n->branch[i]->thing->name, n->branch[i]->node->feature->name);
+        }
+        else printf("|\n  |\n  |___(%s)___[%s]\n  ", n->branch[i]->thing->name, "NULL");
     }    
 }
+
+void print_node_rec(node *n) {
+    print_node(n);
+    if(n->branch[0]->node != NULL) {
+        for(int i=0;i<n->feature->dis_total;i++) {
+            print_node_rec(n->branch[i]->node);
+        }
+    }
+    else return;
+}
+
 feature *make_label(int *l, int size); 
 branch *make_branch(thing *stuff) {
     branch *branch = malloc(sizeof(branch));

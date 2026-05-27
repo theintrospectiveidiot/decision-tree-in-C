@@ -1,5 +1,7 @@
 #include "tree.h"
 
+#define TOTAL 5
+
 double compute_gini_thingwise(thing **data, int *label, int how_many) {
     
     double yes = 0, no = 0;
@@ -64,8 +66,6 @@ feature *give_ftr_personal(thing **data, int how_many, feature *return_ftr) {
     return ftr;
 }
 
-void put_label(node *n); 
-
 feature *make_label(int *l, int size) {
     feature *label = make_feature("label", -1, 2, size);
     label->how_many_each = init_to_num(label->dis_total, 0);
@@ -125,14 +125,23 @@ double *compute_gini_overall_for_branch(node *root, branch *b, feature *ftr, int
 
 double *lowest(double **arr, int size) {
     double *least = arr[0];
-    int index = 0;
     for(int i=1;i<size;i++) {
         if(*least > *arr[i]) {
             least = arr[i];
-            index = i;
         }
     }
     return least;
+}
+
+void put_label(node *n, feature *l) {
+    
+    //feature *l = make_label(label, n->feature->total);
+    print_ftr(l);
+
+    for(int i=0;i<n->feature->dis_total;i++) {
+        thing **data = give_arr(n->feature, n->branch[i]->thing);
+        n->branch[i]->node = make_node(give_ftr_personal(data, n->feature->how_many_each[i], l));
+    }
 }
 
 void compute_gini_overall_for_node(node *root, int *label, int ftr_count,...) {
@@ -151,10 +160,17 @@ void compute_gini_overall_for_node(node *root, int *label, int ftr_count,...) {
         for(int j=0;j<ftr_count;j++) {
             branch_wise_gini_all[j] = compute_gini_overall_for_branch(root, root->branch[i], arr[j], label, root->feature->how_many_each[i]);
             printf("%s as a branch has  gini impurity of %lf for [%s]\n", root->branch[i]->thing->name, *branch_wise_gini_all[j], arr[j]->name);
-         }
-        root->branch[i]->node = make_node((feature *)lowest(branch_wise_gini_all, ftr_count) - 1);
-        
-        print_ftr(root->branch[i]->node->feature);
+        }
+
+        if (compute_gini_thingwise(give_arr(root->feature, root->branch[i]->thing), label, root->feature->how_many_each[i]) == 0) {
+            printf("\n%s as a branch has overall gini impurity of %lf and has [%s] as its node\n", root->branch[i]->thing->name, *lowest(branch_wise_gini_all, ftr_count), root->branch[i]->node->feature->name);
+            continue;
+        }
+        else {
+            root->branch[i]->node = make_node((feature *)lowest(branch_wise_gini_all, ftr_count) - 1);
+            put_label(root->branch[i]->node, make_label(label, TOTAL)); 
+        }
+        //print_ftr(root->branch[i]->node->feature);
         printf("\n%s as a branch has overall gini impurity of %lf and has [%s] as its node\n", root->branch[i]->thing->name, *lowest(branch_wise_gini_all, ftr_count), root->branch[i]->node->feature->name);  
     }
 
@@ -190,8 +206,9 @@ int main() {
                      make_thing("good",         (int[]){2, 3}, 0),
                      make_thing("not so good",  (int[]){2, 4}, 1));
    //print_ftr(ftr3);
-   int label[5] = {0, 1, 0, 0, 1};
+   int label[5] = {0, 1, 0, 1, 0};
    node *root = make_node(stuff);
+   put_label(root, make_label(label, TOTAL));
    //push_nodes(root, make_node(ftr2), make_node(ftr3));
    //print_node(root);
    node *node1 = make_node(ftr3);
@@ -199,12 +216,17 @@ int main() {
    
    compute_gini_overall_for_node(root, label, 2, ftr2, ftr3);
    print_node(root);
+   print_node(root->branch[0]->node);
+   print_node(root->branch[1]->node);
+   for(int i=0;i<root->branch[0]->node->feature->dis_total;i++) {
+       print_ftr(root->branch[0]->node->branch[i]->node->feature);
+   } 
    //thing **things = give_arr(stuff, stuff->dis_thing[0]);
    //thing **persona = give_arr_personal(things, stuff->how_many_each[0], ftr3);
    for(int i=0;i<root->feature->how_many_each[1];i++) {
        //printf("\nname: %s\npos: %d\tindex: %d\n", persona[i]->name, persona[i]->position[1], persona[i]->index);
    } 
-   feature *l = make_label(label, 5);
+   //feature *l = make_label(label, 5);
    //print_ftr(l);
    //printf("%s's gini impurity indivisually is %lf\n", stuff->dis_thing[1]->name, compute_gini_thingwise(give_arr(stuff, stuff->dis_thing[1]), label,stuff->how_many_each[1]));
     
@@ -213,5 +235,6 @@ int main() {
     //printf("\n%lf\n", lowest((double[]){6, 4 ,1, 5}, 4));
     //printf("%d\n", stuff->how_many_each[0]); 
     //printf("%s as a branch has %lf gini impurity for all the [thing]s of %s\n", stuff->dis_thing[0]->name, *compute_gini_overall_for_branch(root, root->branch[0], ftr2, label, stuff->how_many_each[0]), ftr2->name);
+    print_node_rec(root);
 
 }
