@@ -21,6 +21,8 @@ double compute_gini_thingwise(thing **data, int *label, int how_many) {
     return gini;
 }
 
+
+
 double compute_gini_overall(feature *ftr, int *label) {
     
     double gini_weighted = 0;
@@ -37,11 +39,14 @@ double compute_gini_overall(feature *ftr, int *label) {
 }
 
 feature *give_ftr_personal(thing **data, int how_many, feature *return_ftr) {
-    
-    feature *ftr = make_feature_man("temp", return_ftr->x_pos, return_ftr->dis_total, how_many);
-    
+    //printf("bonjour again again!!\n"); 
+    //printf("[%s] has receieved [%s] as the target feature\nand %d (thing)s to be stuffed\n", "temp", return_ftr->name, how_many);
+
+    feature *ftr = make_feature_man(return_ftr->name, return_ftr->x_pos, return_ftr->dis_total, how_many);
     thing **my_data = malloc(sizeof(thing *)*how_many);
     
+    
+
     for(int i=0;i<how_many;i++) {
         my_data[i] = return_ftr->thing[data[i]->position[1]];
     }
@@ -59,7 +64,30 @@ feature *give_ftr_personal(thing **data, int how_many, feature *return_ftr) {
     return ftr;
 }
 
-double compute_gini_overall_for_branch(node *root, branch *b, feature *ftr, int *label, int how_many) {
+void put_label(node *n); 
+
+feature *make_label(int *l, int size) {
+    feature *label = make_feature("label", -1, 2, size);
+    label->how_many_each = init_to_num(label->dis_total, 0);
+    
+    label->dis_thing[0] = make_thing("no", (int[]){-1, 0}, 0);
+    label->dis_thing[1] = make_thing("yes", (int[]){-1, 1}, 1);
+    
+
+    for(int i=0;i<label->total;i++) {
+        label->thing[i] = make_thing((l[i] == 1) ? "yes":"no", (int[]){-1, i}, l[i]);
+        //printf("%d\n", label->thing[i]->position[1]);
+        label->how_many_each[l[i]] += 1;
+    }
+
+    /*for(int i=0;i<label->total;i++) {
+        printf("name: %s\npos: %d\thow_many_each: %d\n", label->thing[i]->name, label->thing[i]->position[1], label->how_many_each[label->thing[i]->index]);
+    }*/
+
+    return label;
+}
+
+double *compute_gini_overall_for_branch(node *root, branch *b, feature *ftr, int *label, int how_many) {
     //printf("bonjour!\n");
     thing **data = give_arr(root->feature, b->thing);
     /*for(int i=0;i<how_many;i++) {
@@ -67,15 +95,15 @@ double compute_gini_overall_for_branch(node *root, branch *b, feature *ftr, int 
     }*/
 
     //printf("bonjour again!!\n");
+    //print_ftr(ftr);
     feature *temp = give_ftr_personal(data, how_many, ftr);
-
+    double *gini_weighted = (double *)(temp + 1);    
     /*for(int i=0;i<how_many;i++) {
         printf("name: %s\tpos: %d\n", temp->thing[i]->name, temp->thing[i]->position[1]);
     }*/
 
     //print_ftr(temp);
     //for(int i=0;i<temp->dis_total;i++) printf("%d\n", temp->how_many_each[i]);
-    double gini_weighted = 0;
 
     for(int i=0;i<temp->dis_total;i++) {
         if(temp->how_many_each[i] == 0) {
@@ -88,41 +116,50 @@ double compute_gini_overall_for_branch(node *root, branch *b, feature *ftr, int 
                 printf("name: %s\tpos: %d\n", data2[j]->name, data2[j]->position[1]);
             }*/    
             double ind_gi = compute_gini_thingwise(data2, label, temp->how_many_each[i]);
-            gini_weighted += (((double) temp->how_many_each[i]) / ((double) temp->total)) * ind_gi;
+            *gini_weighted += (((double) temp->how_many_each[i]) / ((double) temp->total)) * ind_gi;
             //printf("%s's ind gi is %lf\n", temp->dis_thing[i]->name, ind_gi);
         }
-    }
-   
+    } 
     return gini_weighted;
 }
 
-double lowest(double *arr, int size) {
-    double least = arr[0];
-
+double *lowest(double **arr, int size) {
+    double *least = arr[0];
+    int index = 0;
     for(int i=1;i<size;i++) {
-        if(least > arr[i]) {
+        if(*least > *arr[i]) {
             least = arr[i];
+            index = i;
         }
     }
     return least;
 }
 
-double compute_gini_overall_for_node(node *root, int *label, int ftr_count,...) {
+void compute_gini_overall_for_node(node *root, int *label, int ftr_count,...) {
     va_list args;
-    double branch_wise_gini_lowest[root->feature->dis_total];
-    double branch_wise_gini_all[ftr_count];
+    //double branch_wise_gini_lowest[root->feature->dis_total];
+    double *branch_wise_gini_all[ftr_count];
+    feature **arr = malloc(sizeof(feature *)*ftr_count); 
 
     va_start(args, ftr_count);
+
+    for(int j=0;j<ftr_count;j++) {
+        arr[j] = va_arg(args, feature *);
+    }
     
     for(int i=0;i<root->feature->dis_total;i++) {
         for(int j=0;j<ftr_count;j++) {
-            feature *ftr = va_arg(args, feature *);
-            branch_wise_gini_all[j]= compute_gini_overall_for_branch(root, root->branch[i], ftr, label, root->feature->how_many_each[i]);
-        }
-        branch_wise_gini_lowest[i] = lowest(branch_wise_gini_all, ftr_count);
+            branch_wise_gini_all[j] = compute_gini_overall_for_branch(root, root->branch[i], arr[j], label, root->feature->how_many_each[i]);
+            printf("%s as a branch has  gini impurity of %lf for [%s]\n", root->branch[i]->thing->name, *branch_wise_gini_all[j], arr[j]->name);
+         }
+        root->branch[i]->node = make_node((feature *)lowest(branch_wise_gini_all, ftr_count) - 1);
+        
+        print_ftr(root->branch[i]->node->feature);
+        printf("\n%s as a branch has overall gini impurity of %lf and has [%s] as its node\n", root->branch[i]->thing->name, *lowest(branch_wise_gini_all, ftr_count), root->branch[i]->node->feature->name);  
     }
 
     va_end(args);
+    free(arr);
 }
 
 int main() {
@@ -153,27 +190,28 @@ int main() {
                      make_thing("good",         (int[]){2, 3}, 0),
                      make_thing("not so good",  (int[]){2, 4}, 1));
    //print_ftr(ftr3);
-
+   int label[5] = {0, 1, 0, 0, 1};
    node *root = make_node(stuff);
-   push_nodes(root, make_node(ftr2), make_node(ftr3));
-   print_node(root);
+   //push_nodes(root, make_node(ftr2), make_node(ftr3));
+   //print_node(root);
    node *node1 = make_node(ftr3);
    print_node(node1);
-
-   int label[5] = {0, 1, 0, 0, 1};
-
+   
+   compute_gini_overall_for_node(root, label, 2, ftr2, ftr3);
+   print_node(root);
    //thing **things = give_arr(stuff, stuff->dis_thing[0]);
    //thing **persona = give_arr_personal(things, stuff->how_many_each[0], ftr3);
    for(int i=0;i<root->feature->how_many_each[1];i++) {
        //printf("\nname: %s\npos: %d\tindex: %d\n", persona[i]->name, persona[i]->position[1], persona[i]->index);
    } 
-    
+   feature *l = make_label(label, 5);
+   //print_ftr(l);
    //printf("%s's gini impurity indivisually is %lf\n", stuff->dis_thing[1]->name, compute_gini_thingwise(give_arr(stuff, stuff->dis_thing[1]), label,stuff->how_many_each[1]));
     
     //printf("%s's weighted mean gini impurity is %lf\n", stuff->name, compute_gini_overall(stuff, label));
 
     //printf("\n%lf\n", lowest((double[]){6, 4 ,1, 5}, 4));
     //printf("%d\n", stuff->how_many_each[0]); 
-    printf("%s as a branch has %lf gini impurity for all the [thing]s of %s\n", stuff->dis_thing[0]->name, compute_gini_overall_for_branch(root, root->branch[0], ftr3, label, stuff->how_many_each[0]), ftr3->name);
+    //printf("%s as a branch has %lf gini impurity for all the [thing]s of %s\n", stuff->dis_thing[0]->name, *compute_gini_overall_for_branch(root, root->branch[0], ftr2, label, stuff->how_many_each[0]), ftr2->name);
 
 }
