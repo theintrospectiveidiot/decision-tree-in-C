@@ -129,6 +129,7 @@ int lowest(double **arr, int size) {
     for(int i=1;i<size;i++) {
         if(*least > *arr[i]) {
             least = arr[i];
+            index = i;
         }
     }
     return index;
