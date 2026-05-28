@@ -137,14 +137,14 @@ void push_things_man(feature *feature, int count,...) {
 }
 
 void print_ftr(feature * ftr) {
-    printf("(%s):\n", ftr->name);
-    printf("all the [thing]s:\n");
+    printf("[%s]:\n", ftr->name);
+    printf("all the [(thing)s:\n");
     for(int i=0;i<ftr->total;i++) {
         printf("pos: %d\nindex: %d\n", ftr->thing[i]->position[1], ftr->thing[i]->index);
         printf("name: %s\n\n", ftr->thing[i]->name);
     }
 
-    printf("\nall the [dis_thing]s:\n");
+    printf("\nall the (dis_thing)s:\n");
     for(int i=0;i<ftr->dis_total;i++) {
         printf("index: %d\n", ftr->dis_thing[i]->index);
         printf("name: %s\n\n", ftr->dis_thing[i]->name);
@@ -155,17 +155,22 @@ void print_ftr(feature * ftr) {
 void print_node(node *n) {
     printf("\n[%s]\n  ", n->feature->name);
     for(int i=0;i<n->feature->dis_total;i++) {
-        if (n->branch[i]->node != NULL) {
-            printf("|\n  |\n  |___(%s)___[%s]\n  ", n->branch[i]->thing->name, n->branch[i]->node->feature->name);
+        if (n->feature->how_many_each[i] >= 0) {
+            if (n->branch[i]->node != NULL) {
+                printf("|\n  |\n  |___(%s - {%d})___[%s]\n  ", n->branch[i]->thing->name, n->feature->how_many_each[i], n->branch[i]->node->feature->name);
+                //for(int i=0;i<node->)
+            }
+            else printf("|\n  |\n  |___(%s - {%d})___[%s]\n  ", n->branch[i]->thing->name, n->feature->how_many_each[i], "NULL");
         }
-        else printf("|\n  |\n  |___(%s)___[%s]\n  ", n->branch[i]->thing->name, "NULL");
-    }    
+        else return;
+    }
 }
 
 void print_node_rec(node *n) {
     print_node(n);
     if(n->branch[0]->node != NULL) {
         for(int i=0;i<n->feature->dis_total;i++) {
+            printf("\n(%s)", n->branch[i]->thing->name);
             print_node_rec(n->branch[i]->node);
         }
     }
