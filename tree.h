@@ -37,7 +37,7 @@ struct branch {
 };
 
 feature *make_feature(char *name, int x, int dis_total, int total) {
-    feature *some_ftr = (feature *)malloc(sizeof(feature));
+    feature *some_ftr = (feature *)malloc(sizeof(feature) + sizeof(double));
     
     some_ftr->name = strdup(name);
     some_ftr->x_pos = x;
@@ -229,4 +229,51 @@ thing **give_arr(feature *feature, thing *th) {
         }
     }
     return arr;
+}
+
+feature *give_ftr_personal(thing **data, int how_many, feature *return_ftr) {
+    //printf("bonjour again again!!\n"); 
+    //printf("[%s] has receieved [%s] as the target feature\nand %d (thing)s to be stuffed\n", "temp", return_ftr->name, how_many);
+
+    feature *ftr = make_feature_man(return_ftr->name, return_ftr->x_pos, return_ftr->dis_total, how_many);
+    thing **my_data = malloc(sizeof(thing *)*how_many);
+    
+    
+
+    for(int i=0;i<how_many;i++) {
+        my_data[i] = return_ftr->thing[data[i]->position[1]];
+    }
+
+    ftr->dis_thing = return_ftr->dis_thing;
+    ftr->thing = my_data;
+
+    ftr->how_many_each = init_to_num(ftr->dis_total, 0);
+    
+    for(int i=0;i<ftr->total;i++) {
+        //printf("name: %s\t index: %d\n", ftr->thing[i]->name, ftr->thing[i]->index);
+        ftr->how_many_each[ftr->thing[i]->index] += 1;
+    }
+
+    return ftr;
+}
+
+feature *make_label(int *l, int size) {
+    feature *label = make_feature("label", -1, 2, size);
+    label->how_many_each = init_to_num(label->dis_total, 0);
+    
+    label->dis_thing[0] = make_thing("no", (int[]){-1, 0}, 0);
+    label->dis_thing[1] = make_thing("yes", (int[]){-1, 1}, 1);
+    
+
+    for(int i=0;i<label->total;i++) {
+        label->thing[i] = make_thing((l[i] == 1) ? "yes":"no", (int[]){-1, i}, l[i]);
+        //printf("%d\n", label->thing[i]->position[1]);
+        label->how_many_each[l[i]] += 1;
+    }
+
+    /*for(int i=0;i<label->total;i++) {
+        printf("name: %s\npos: %d\thow_many_each: %d\n", label->thing[i]->name, label->thing[i]->position[1], label->how_many_each[label->thing[i]->index]);
+    }*/
+
+    return label;
 }
