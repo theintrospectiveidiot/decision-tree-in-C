@@ -1,4 +1,4 @@
-#define TOTAL 5
+#define TOTAL 8
 
 #include "tree.h"
 #include "funcs.h"
@@ -31,9 +31,9 @@ int main() {
                      make_thing("good",         (int[]){2, 3}, 0),
                      make_thing("not so good",  (int[]){2, 4}, 1));
    //print_ftr(ftr3);
-   int label[TOTAL] = {1, 1, 1, 0, 0};
+   int label[TOTAL] = {1, 1, 1, 0, 0, 1, 0, 1};
 
-   /*feature *study_hrs = make_feature("Study Hours", 0, 3, TOTAL);
+   feature *study_hrs = make_feature("Study Hours", 0, 3, TOTAL);
    push_things(study_hrs, make_thing("High",    (int[]){0, 0}, 0),
                           make_thing("High",    (int[]){0, 1}, 0),  
                           make_thing("Medium",  (int[]){0, 2}, 1),
@@ -61,7 +61,7 @@ int main() {
                          make_thing("No",  (int[]){0, 4}, 1),
                          make_thing("Yes", (int[]){0, 5}, 0),
                          make_thing("Yes", (int[]){0, 6}, 0),
-                         make_thing("No",  (int[]){0, 7}, 1));*/
+                         make_thing("No",  (int[]){0, 7}, 1));
 
 
 
@@ -74,19 +74,19 @@ int main() {
    //print_node(node1);
 
    //do_stuff(root, label, 2, ftr2, ftr3);
-   node *root2 = pre_do_stuff(label, 3, stuff, ftr2, ftr3);
+   node *root2 = pre_do_stuff(label, 3, study_hrs, attendance, ass_subm);
    //print_node(root);
    //print_node(root->branch[0]->node);
    //print_node(root->branch[1]->node);
-   for(int i=0;i<root->branch[0]->node->feature->dis_total;i++) {
+   /*for(int i=0;i<root->branch[0]->node->feature->dis_total;i++) {
        //print_ftr(root->branch[0]->node->branch[i]->node->feature);
-   } 
+   }*/ 
    
    //thing **things = give_arr(stuff, stuff->dis_thing[0]);
    //thing **persona = give_arr_personal(things, stuff->how_many_each[0], ftr3);
-   for(int i=0;i<root->feature->how_many_each[1];i++) {
+   /*for(int i=0;i<root->feature->how_many_each[1];i++) {
        //printf("\nname: %s\npos: %d\tindex: %d\n", persona[i]->name, persona[i]->position[1], persona[i]->index);
-   } 
+   }*/ 
    //feature *l = make_label(label, 5);
    //print_ftr(l);
    //printf("%s's gini impurity indivisually is %lf\n", stuff->dis_thing[1]->name, compute_gini_thingwise(give_arr(stuff, stuff->dis_thing[1]), label,stuff->how_many_each[1]));
