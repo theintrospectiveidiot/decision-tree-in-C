@@ -8,6 +8,6 @@ Also, don't forget to add `#define TOTAL n` at the top, where n no. of rows of y
 
 ## P. S. 
 
-it was fun fighting weird bugs while implementing this.
+it was fun fighting with weird bugs while implementing this.
 
 
