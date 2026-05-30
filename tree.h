@@ -220,7 +220,7 @@ thing **give_arr(feature *feature, thing *th) {
     }*/
     int n = 0;
     thing **arr = malloc(sizeof(thing *)*(feature->how_many_each[th->index]));
-    //printf("name est %s et index est %d est %d allocated\n", th->name, th->index, feature->how_many_each[th->index]);
+    //printf("name est (%s) et index est %d est %d allocated while working on [%s]\n", th->name, th->index, feature->how_many_each[th->index], feature->name);
     for(int i=0;i<feature->total;i++) {
         if (th->index == feature->thing[i]->index) {
             arr[n] = feature->thing[i];
