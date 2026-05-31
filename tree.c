@@ -31,71 +31,88 @@ int main() {
                      make_thing("good",         (int[]){2, 3}, 0),
                      make_thing("not so good",  (int[]){2, 4}, 1));*/
    //print_ftr(ftr3);
-   int label[TOTAL] = {0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0};
+   int label[TOTAL] = {1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0};
 
-   feature *out = make_feature("outlook", 0, 3, TOTAL);
-   push_things(out, make_thing("sunny",     (int[]){0,  0}, 0),
-                    make_thing("sunny",     (int[]){0,  1}, 0),
-                    make_thing("overcast",  (int[]){0,  2}, 1),
-                    make_thing("rainfall",  (int[]){0,  3}, 2),
-                    make_thing("rainfall",  (int[]){0,  4}, 2),
-                    make_thing("rainfall",  (int[]){0,  5}, 2),
-                    make_thing("overcast",  (int[]){0,  6}, 1),
-                    make_thing("sunny",     (int[]){0,  7}, 0),
-                    make_thing("sunny",     (int[]){0,  8}, 0),
-                    make_thing("rainfall",  (int[]){0,  9}, 2),
-                    make_thing("sunny",     (int[]){0, 10}, 0),
-                    make_thing("overcast",  (int[]){0, 11}, 1),
-                    make_thing("overcast",  (int[]){0, 12}, 1),
-                    make_thing("rainfall",  (int[]){0, 13}, 2));
+   feature *income = make_feature("income", 0, 3, TOTAL);
+   push_things(income,  make_thing("high",      (int[]){0,  0}, 0),
+                        make_thing("high",      (int[]){0,  1}, 0),
+                        make_thing("high",      (int[]){0,  2}, 0),
+                        make_thing("medium",    (int[]){0,  3}, 1),
+                        make_thing("medium",    (int[]){0,  4}, 1),
+                        make_thing("medium",    (int[]){0,  5}, 1),
+                        make_thing("low",       (int[]){0,  6}, 2),
+                        make_thing("low",       (int[]){0,  7}, 2),
+                        make_thing("low",       (int[]){0,  8}, 2),
+                        make_thing("medium",    (int[]){0,  9}, 1),
+                        make_thing("high",      (int[]){0, 10}, 0),
+                        make_thing("medium",    (int[]){0, 11}, 1),
+                        make_thing("low",       (int[]){0, 12}, 2),
+                        make_thing("high",      (int[]){0, 13}, 0));
 
-   feature *temp = make_feature("temparature", 1, 3, TOTAL);
-   push_things(temp, make_thing("hot",  (int[]){1,  0}, 0),
-                     make_thing("hot",  (int[]){1,  1}, 0),
-                     make_thing("hot",  (int[]){1,  2}, 0),
-                     make_thing("mild", (int[]){1,  3}, 1),
-                     make_thing("cool", (int[]){1,  4}, 2),
-                     make_thing("cool", (int[]){1,  5}, 2),
-                     make_thing("cool", (int[]){1,  6}, 2),
-                     make_thing("mild", (int[]){1,  7}, 1),
-                     make_thing("cool", (int[]){1,  8}, 2),
-                     make_thing("mild", (int[]){1,  9}, 1),
-                     make_thing("mild", (int[]){1, 10}, 1),
-                     make_thing("mild", (int[]){1, 11}, 1),
-                     make_thing("hot",  (int[]){1, 12}, 0),
-                     make_thing("mild", (int[]){1, 13}, 1));
+   feature *empl = make_feature("employment", 1, 2, TOTAL);
+   push_things(empl, make_thing("stable",   (int[]){1,  0}, 0),
+                     make_thing("unstable", (int[]){1,  1}, 1),
+                     make_thing("stable",   (int[]){1,  2}, 0),
+                     make_thing("stable",   (int[]){1,  3}, 0),
+                     make_thing("unstable", (int[]){1,  4}, 1),
+                     make_thing("stable",   (int[]){1,  5}, 0),
+                     make_thing("stable",   (int[]){1,  6}, 0),
+                     make_thing("unstable", (int[]){1,  7}, 1),
+                     make_thing("stable",   (int[]){1,  8}, 0),
+                     make_thing("stable",   (int[]){1,  9}, 0),
+                     make_thing("stable",   (int[]){1, 10}, 0),
+                     make_thing("unstable", (int[]){1, 11}, 1),
+                     make_thing("stable",   (int[]){1, 12}, 0),
+                     make_thing("unstable", (int[]){1, 13}, 1));
 
-   feature *humi = make_feature("humidity", 2, 2, TOTAL);
-   push_things(humi, make_thing("high",   (int[]){2,  0}, 0),
-                     make_thing("high",   (int[]){2,  1}, 0),
-                     make_thing("high",   (int[]){2,  2}, 0),
-                     make_thing("high",   (int[]){2,  3}, 0),
-                     make_thing("normal", (int[]){2,  4}, 1),
-                     make_thing("normal", (int[]){2,  5}, 1),
-                     make_thing("normal", (int[]){2,  6}, 1),
-                     make_thing("high",   (int[]){2,  7}, 0),
-                     make_thing("normal", (int[]){2,  8}, 1),
-                     make_thing("normal", (int[]){2,  9}, 1),
-                     make_thing("normal", (int[]){2, 10}, 1),
-                     make_thing("high",   (int[]){2, 11}, 0),
-                     make_thing("normal", (int[]){2, 12}, 1),
-                     make_thing("high",   (int[]){2, 13}, 0));
+   feature *c_sc = make_feature("credit score", 2, 3, TOTAL);
+   push_things(c_sc, make_thing("good",         (int[]){2,  0}, 0),
+                     make_thing("excellent",    (int[]){2,  1}, 1),
+                     make_thing("poor",         (int[]){2,  2}, 2),
+                     make_thing("good",         (int[]){2,  3}, 0),
+                     make_thing("poor",         (int[]){2,  4}, 2),
+                     make_thing("good",         (int[]){2,  5}, 0),
+                     make_thing("good",         (int[]){2,  6}, 0),
+                     make_thing("poor",         (int[]){2,  7}, 2),
+                     make_thing("excellent",    (int[]){2,  8}, 1),
+                     make_thing("excellent",    (int[]){2,  9}, 1),
+                     make_thing("good",         (int[]){2, 10}, 0),
+                     make_thing("excellent",    (int[]){2, 11}, 1),
+                     make_thing("poor",         (int[]){2, 12}, 2),
+                     make_thing("good",         (int[]){2, 13}, 0));
 
-   feature *wind = make_feature("wind", 3, 2, TOTAL);
-   push_things(wind, make_thing("weak",     (int[]){3,  0}, 0),
-                     make_thing("strong",   (int[]){3,  1}, 1),
-                     make_thing("weak",     (int[]){3,  2}, 0),
-                     make_thing("weak",     (int[]){3,  3}, 0),
-                     make_thing("weak",     (int[]){3,  4}, 0),
-                     make_thing("strong",   (int[]){3,  5}, 1),
-                     make_thing("strong",   (int[]){3,  6}, 1),
-                     make_thing("weak",     (int[]){3,  7}, 0),
-                     make_thing("weak",     (int[]){3,  8}, 0),
-                     make_thing("weak",     (int[]){3,  9}, 0),
-                     make_thing("strong",   (int[]){3, 10}, 1),
-                     make_thing("strong",   (int[]){3, 11}, 1),
-                     make_thing("weak",     (int[]){3, 12}, 0),
-                     make_thing("strong",   (int[]){3, 13}, 1));
+   feature *loan = make_feature("existing loan", 3, 2, TOTAL);
+   push_things(loan, make_thing("no",  (int[]){3,  0}, 0),
+                     make_thing("no",  (int[]){3,  1}, 0),
+                     make_thing("yes", (int[]){3,  2}, 1),
+                     make_thing("no",  (int[]){3,  3}, 0),
+                     make_thing("no",  (int[]){3,  4}, 0),
+                     make_thing("yes", (int[]){3,  5}, 1),
+                     make_thing("no",  (int[]){3,  6}, 0),
+                     make_thing("yes", (int[]){3,  7}, 1),
+                     make_thing("no",  (int[]){3,  8}, 0),
+                     make_thing("yes", (int[]){3,  9}, 1),
+                     make_thing("no",  (int[]){3, 10}, 0),
+                     make_thing("no",  (int[]){3, 11}, 0),
+                     make_thing("no",  (int[]){3, 12}, 0),
+                     make_thing("yes", (int[]){3, 13}, 1));
+
+   feature *prop = make_feature("property", 4, 2, TOTAL);
+   push_things(prop, make_thing("yes",  (int[]){3,  0}, 0),
+                     make_thing("yes",  (int[]){3,  1}, 0),
+                     make_thing("no",   (int[]){3,  2}, 1),
+                     make_thing("yes",  (int[]){3,  3}, 0),
+                     make_thing("no",   (int[]){3,  4}, 1),
+                     make_thing("no",   (int[]){3,  5}, 1),
+                     make_thing("yes",  (int[]){3,  6}, 0),
+                     make_thing("no",   (int[]){3,  7}, 1),
+                     make_thing("yes",  (int[]){3,  8}, 0),
+                     make_thing("yes",  (int[]){3,  9}, 0),
+                     make_thing("no",   (int[]){3, 10}, 1),
+                     make_thing("yes",  (int[]){3, 11}, 0),
+                     make_thing("yes",  (int[]){3, 12}, 0),
+                     make_thing("yes",  (int[]){3, 13}, 0));
+
 
    /*feature *study_hrs = make_feature("Study Hours", 0, 3, TOTAL);
    push_things(study_hrs, make_thing("High",    (int[]){0, 0}, 0),
@@ -133,7 +150,7 @@ int main() {
    //print_node(node1);
 
    //do_stuff(root, label, 2, ftr2, ftr3);
-   node *root2 = pre_do_stuff(label, 4, out, temp, humi, wind);
+   node *root2 = pre_do_stuff(label, 5, income, empl, loan, prop, c_sc);
    //print_node(root);
    //print_node(root->branch[0]->node);
    //print_node(root->branch[1]->node);
