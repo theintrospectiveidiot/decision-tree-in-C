@@ -7,10 +7,10 @@ int main() {
    //feature *stuff = make_feature("coolness", 0, 2, 5);
 
    /*push_things(stuff, make_thing("cool",    (int[]){0, 0}, 0), 
-                      make_thing("cool",    (int[]){0, 1}, 0), 
-                      make_thing("uncool",  (int[]){0, 2}, 1),
-                      make_thing("cool",    (int[]){0, 3}, 0),
-                      make_thing("uncool",  (int[]){0, 4}, 1));
+                        make_thing("cool",    (int[]){0, 1}, 0), 
+                        make_thing("uncool",  (int[]){0, 2}, 1),
+                        make_thing("cool",    (int[]){0, 3}, 0),
+                        make_thing("uncool",  (int[]){0, 4}, 1));
    //print_ftr(stuff);
 
    feature *ftr2 = make_feature("weirdness", 1, 3, 5);
@@ -173,5 +173,6 @@ int main() {
     //printf("%d\n", stuff->how_many_each[0]); 
     //printf("%s as a branch has %lf gini impurity for all the [thing]s of %s\n", stuff->dis_thing[0]->name, *compute_gini_overall_for_branch(root, root->branch[0], ftr2, label, stuff->how_many_each[0]), ftr2->name);
     print_node_rec(root2);
+    printf("[%s]\n", (root2->branch[0]->node)->branch[0]->node->branch[1]->node->feature->name);
 
 }

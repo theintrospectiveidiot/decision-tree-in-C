@@ -1,3 +1,9 @@
+
+
+
+
+
+
 double compute_gini_thingwise(thing **data, int *label, int how_many) {
     
     double yes = 0, no = 0;
@@ -132,7 +138,7 @@ void compute_gini_overall_for_node(node *root, int *label, int ftr_count, featur
 
         for(int j=0;j<ftr_count;j++) {
             branch_wise_gini_all[j] = compute_gini_overall_for_branch(root, root->branch[i], arr[j], label, root->feature->how_many_each[i]);
-            printf("(%s) as a branch of [%s] has  gini impurity of %lf for [%s]\n", root->branch[i]->thing->name, root->feature->name, *branch_wise_gini_all[j], arr[j]->name);
+            //printf("(%s) as a branch of [%s] has  gini impurity of %lf for [%s]\n", root->branch[i]->thing->name, root->feature->name, *branch_wise_gini_all[j], arr[j]->name);
         }
 
         if (compute_gini_thingwise(give_arr(root->feature, root->branch[i]->thing), label, root->feature->how_many_each[i]) == 0) {
